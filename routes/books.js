@@ -4,6 +4,7 @@ var Book = require('../models').Book;
 var Patron = require('../models').Patron;
 var Loan = require('../models').Loan;
 var todaysDate = new Date();
+var todaysDateString = todaysDate.getFullYear() + '-' + (todaysDate.getMonth() + 1) + '-' + todaysDate.getDate();
 
 /////////////////////////////
 /* Get new book form */
@@ -45,7 +46,7 @@ router.get('/overdue_book', function(req, res, next) {
       }
     ]
   }).then(function(books) {
-    res.render('overdue_book', {books});
+    res.render('list_book', {books});
   });
 });
 
@@ -66,7 +67,7 @@ router.get('/checked_book', function(req, res, next) {
       }
     ]
   }).then(function(books) {
-    res.render('checked_book', {books});
+    res.render('list_book', {books});
   });
 });
 
@@ -141,7 +142,7 @@ router.get('/:id/return', function(req, res, next) {
     ]
   }).then(function(loans) {
     console.log(loans);
-    res.render('return_book', {loan: loans[0], patron: loans[1], book: loans[2], todaysDate});
+    res.render('return_book', {loan: loans[0], patron: loans[1], book: loans[2], todaysDateString});
   });
 });
 

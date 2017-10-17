@@ -14,9 +14,9 @@ block content
   p
     strong Return By: &nbsp;
     | #{loan.return_by}
-  form
+  form(method='post' action=`/books/${loan.Book.id}/return`)
     p
       label(for='returned_on') Returned on:
-      input#returned_on(type='text', value=`${todaysDate}`)
+      input#returned_on(type='text', name='returned_on' value=`${todaysDateString}`)
     p
       input(type='submit', value='Return Book')
