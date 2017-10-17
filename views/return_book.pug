@@ -2,6 +2,10 @@ extends layout
 
 block content
   h1 #{loan.Patron.first_name} #{loan.Patron.last_name}: #{loan.Book.title}
+  if errors
+    ul
+      each error in errors
+        li= error
   p
     strong Book Title: &nbsp;
     | #{loan.Book.title}

@@ -86,6 +86,23 @@ router.get('/checked_loans', function(req, res, next) {
 router.post('/new', function(req, res, next) {
   Loan.create(req.body).then(function() {
     res.redirect('/loans');
+  }).catch(function(error) {
+    const allBooks = Book.findAll({
+      order: [
+        ['title', 'ASC']
+      ]
+    });
+
+    const allPatrons = Patron.findAll({
+      order: [
+        ['first_name', 'ASC'],
+        ['last_name', 'ASC']
+      ]
+    });
+
+    Promise.all([allBooks, allPatrons]).then(function(values) {
+      res.render('new_loan', {books: values[0], patrons: values[1], todaysDateString, returnDateString, errors: error.errors});
+    });
   });
 });
 

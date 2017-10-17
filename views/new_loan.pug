@@ -3,6 +3,10 @@ extends layout
 block content
   h1 New Loan
   form(method='post', action='/loans/new')
+    if errors
+      ul
+        each error in errors
+          li= error.message
     p
       label(for='book_id') Book
       select#book_id(name='book_id')

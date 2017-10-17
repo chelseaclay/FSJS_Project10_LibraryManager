@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Title is required'
+          msg: 'First Name is required'
         }
       }
     },
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Title is required'
+          msg: 'Last Name is required'
         }
       }
     },
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Title is required'
+          msg: 'Address is required'
         }
       }
     },
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Title is required'
+          msg: 'Email is required'
         }
       }
     },
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'Title is required'
+          msg: 'Library ID is required'
         }
       }
     },
@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       validate: {
         notEmpty: {
-          msg: 'Title is required'
+          msg: 'Zip Code is required'
         }
       }
     }

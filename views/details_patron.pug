@@ -3,6 +3,10 @@ extends layout
 block content
   h1 Patron: #{patron.first_name} #{patron.last_name}
   form(method='post' action=`/patrons/${patron.id}`)
+    if errors
+      ul
+        each error in errors
+          li= error
     p
       label(for='first_name') First Name
       input#first_name(type='text', name='first_name', value=`${patron.first_name}`)
