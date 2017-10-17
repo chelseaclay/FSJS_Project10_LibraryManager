@@ -3,12 +3,18 @@ var router = express.Router();
 var Loan = require('../models').Loan;
 var Book = require('../models').Book;
 var Patron = require('../models').Patron;
+var todaysDate = new Date();
 
-/* GET pug files for each url. */
+/////////////////////////////
+/* Get new loan form */
+/////////////////////////////
 router.get('/new', function(req, res, next) {
   res.render('new_loan');
 });
 
+/////////////////////////////
+/* Get all Loans */
+/////////////////////////////
 router.get('/', function(req, res, next) {
   Loan.findAll({
     include: [
@@ -20,8 +26,11 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/////////////////////////////
+/* Get overdue Loans */
+/////////////////////////////
 router.get('/overdue_loans', function(req, res, next) {
-  res.render('overdue_loan');
+  res.render('overdue_loan', {loans});
 });
 
 router.get('/checked_loans', function(req, res, next) {

@@ -3,14 +3,14 @@ extends layout
 block content
   h1 Overdue Loans
   p
-    a.button(href='new_loan.html') Create New Loan
+    a.button(href='/loans/new') Create New Loan
   p
     | Filters
-    a(href='all_loans.html') All
-    |
-    a(href='overdue_loans.html') Overdue
-    |
-    a(href='checked_loans.html') Checked Out
+    a(href='/loans') &nbsp; All
+    span &#124;
+    a(href='/loans/overdue_loan') Overdue
+    span &#124;
+    a(href='/loans/checked_loan) Checked Out
   table
     thead
       tr
