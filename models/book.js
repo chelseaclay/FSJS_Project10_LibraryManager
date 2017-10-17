@@ -26,12 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     first_published: DataTypes.INTEGER
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
   });
 
   Book.associate = function(models) {

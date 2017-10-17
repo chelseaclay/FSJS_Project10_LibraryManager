@@ -34,13 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     returned_on: DataTypes.DATE
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-
-      }
-    }
   });
 
   Loan.associate = function(models) {
