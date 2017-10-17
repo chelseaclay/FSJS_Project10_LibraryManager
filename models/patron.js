@@ -14,5 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
+  Patron.associate = function(models) {
+    Patron.hasMany(models.Loan, { foreignKey: "patron_id" });
+  };
+
   return Patron;
 };

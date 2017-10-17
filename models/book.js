@@ -12,5 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
+  Book.associate = function(models) {
+    Book.hasOne(models.Loan, { foreignKey: "book_id" });
+  };
+
   return Book;
 };

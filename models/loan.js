@@ -10,8 +10,15 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: function(models) {
         // associations can be defined here
+
       }
     }
   });
+
+  Loan.associate = function(models) {
+    Loan.belongsTo(models.Book, { foreignKey: "book_id" });
+    Loan.belongsTo(models.Patron, { foreignKey: "patron_id" });
+  };
+
   return Loan;
 };
