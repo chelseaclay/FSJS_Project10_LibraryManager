@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const moment = require('moment');
 var Loan = require('../models').Loan;
 var Book = require('../models').Book;
 var Patron = require('../models').Patron;
@@ -33,13 +34,33 @@ router.get('/new', function(req, res, next) {
 /* Get all Loans */
 /////////////////////////////
 router.get('/', function(req, res, next) {
-  Loan.findAll({
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Loan.count({
+    distinct: true,
+    col: 'book_id',
     include: [
       {model: Patron},
       {model: Book}
     ]
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
+  Loan.findAll({
+    include: [
+      {model: Patron},
+      {model: Book}
+    ],
+    limit: 5,
+    offset: offset
   }).then(function(loans) {
-    res.render('list_loan', {loans});
+    res.render('list_loan', {loans, pages: pagination});
   });
 });
 
@@ -47,6 +68,30 @@ router.get('/', function(req, res, next) {
 /* Get overdue Loans */
 /////////////////////////////
 router.get('/overdue_loans', function(req, res, next) {
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Loan.count({
+    distinct: true,
+    col: 'book_id',
+    where: {
+      returned_on: null,
+      return_by: {
+        lt: todaysDate
+      }
+    },
+    include: [
+      {model: Book},
+      {model: Patron}
+    ]
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
   Loan.findAll({
     where: {
       returned_on: null,
@@ -59,7 +104,7 @@ router.get('/overdue_loans', function(req, res, next) {
       {model: Patron}
     ]
   }).then(function(loans) {
-    res.render('list_loan', {loans});
+    res.render('list_loan', {loans, pages: pagination});
   });
 });
 
@@ -67,6 +112,27 @@ router.get('/overdue_loans', function(req, res, next) {
 /* Get checked out Books */
 /////////////////////////////
 router.get('/checked_loans', function(req, res, next) {
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Loan.count({
+    distinct: true,
+    col: 'book_id',
+    where: {
+      returned_on: null,
+    },
+    include: [
+      {model: Book},
+      {model: Patron}
+    ]
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
   Loan.findAll({
     where: {
       returned_on: null,
@@ -76,7 +142,7 @@ router.get('/checked_loans', function(req, res, next) {
       {model: Patron}
     ]
   }).then(function(loans) {
-    res.render('list_loan', {loans});
+    res.render('list_loan', {loans, pages: pagination});
   });
 });
 

@@ -25,7 +25,15 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    first_published: DataTypes.INTEGER
+    first_published: {
+      type: DataTypes.INTEGER,
+      validate: {
+        not: {
+          args: /[a-zA-Z!@#$%\^&*()_+=[\]{}:;'".,/\\?`~\-<>]/gim,
+          msg: 'First Published must be formatted YYYY-MM-DD'
+        }
+      }
+    }
   });
 
   Book.associate = function(models) {

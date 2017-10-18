@@ -33,3 +33,7 @@ block content
           td
             if(!loan.returned_on)
                 a.button(href=`/books/${loan.Book.id}/return`) Return Book
+  div.paginate
+    each page in pages
+      a(href=`/loans?page=${page}`) #{page}
+      span &#124;

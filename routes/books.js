@@ -17,12 +17,28 @@ router.get('/new', function(req, res, next) {
 /* Get all Books */
 /////////////////////////////
 router.get('/', function(req, res, next) {
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Book.count({
+    distinct: true,
+    col: 'id'
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
   Book.findAll({
     order: [
       ['title', 'ASC']
-    ]
+    ],
+    limit: 5,
+    offset: offset
   }).then(function(books) {
-    res.render('list_book', {books});
+    res.render('list_book', {books, pages: pagination});
   });
 });
 
@@ -30,10 +46,37 @@ router.get('/', function(req, res, next) {
 /* Get overdue Books */
 /////////////////////////////
 router.get('/overdue_book', function(req, res, next) {
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Book.count({
+    distinct: true,
+    col: 'id',
+    include: [
+      {
+        model: Loan,
+        where: {
+          returned_on: null,
+          return_by: {
+            lt: todaysDate
+          }
+        }
+      }
+    ]
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
   Book.findAll({
     order: [
       ['title', 'ASC']
     ],
+    limit: 5,
+    offset: offset,
     include: [
       {
         model: Loan,
@@ -46,7 +89,7 @@ router.get('/overdue_book', function(req, res, next) {
       }
     ]
   }).then(function(books) {
-    res.render('list_book', {books});
+    res.render('list_book', {books, pages: pagination});
   });
 });
 
@@ -54,6 +97,28 @@ router.get('/overdue_book', function(req, res, next) {
 /* Get checked out Books */
 /////////////////////////////
 router.get('/checked_book', function(req, res, next) {
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Book.count({
+    distinct: true,
+    col: 'id',
+    include: [
+      {
+        model: Loan,
+        where: {
+          returned_on: null,
+        }
+      }
+    ]
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
   Book.findAll({
     order: [
       ['title', 'ASC']
@@ -67,7 +132,7 @@ router.get('/checked_book', function(req, res, next) {
       }
     ]
   }).then(function(books) {
-    res.render('list_book', {books});
+    res.render('list_book', {books, pages: pagination});
   });
 });
 

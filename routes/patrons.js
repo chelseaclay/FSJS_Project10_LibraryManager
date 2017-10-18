@@ -15,6 +15,48 @@ router.get('/new', function(req, res, next) {
 /* Get all Patrons */
 /////////////////////////////
 router.get('/', function(req, res, next) {
+  var searched = req.query.search;
+
+  if(searched != undefined) {
+    Patron.findAll({
+      order: [
+        ['first_name', 'ASC'],
+        ['last_name', 'ASC']
+      ],
+      where: {
+        $or: [{
+          first_name: {
+            $like: '%' + req.query.search + '%'
+          }
+        }, {
+          last_name: {
+            $like: '%' + req.query.search + '%'
+          }
+        }, {
+          address: {
+            $like: '%' + req.query.search + '%'
+          }
+        }, {
+          email: {
+            $like: '%' + req.query.search + '%'
+          }
+        }
+        , {
+          library_id: {
+            $like: '%' + req.query.search + '%'
+          }
+        }
+        , {
+          zip_code: {
+            $like: '%' + req.query.search + '%'
+          }
+        }]
+      }
+    }).then((patrons) => {
+      res.render('list_patron', {patrons});
+    });
+  }
+
   Patron.findAll({
     order: [
       ['first_name', 'ASC'],
@@ -123,6 +165,43 @@ router.post('/:id', function(req, res, next) {
       });
     });
   }
+});
+
+/////////////////////////////
+/* Search patrons */
+/////////////////////////////
+router.get('/search', function (req, res) {
+  var searched = req.query.search;
+  console.log(searched);
+    Patron.findAll({
+      order: [
+        ['first_name', 'ASC'],
+        ['last_name', 'ASC']
+      ],
+      where: {
+        // first_name: {
+        //   $like: '%' + req.query.search + '%'
+        // },
+        last_name: {
+          $like: '%' + req.query.search + '%'
+        }
+        // ,
+        // address: {
+        //   $like: '%' + req.query.search + '%'
+        // },
+        // email: {
+        //   $like: '%' + req.query.search + '%'
+        // },
+        // library_id: {
+        //   $like: '%' + req.query.search + '%'
+        // },
+        // zip_code: {
+        //   $like: '%' + req.query.search + '%'
+        // }
+      }
+    }).then((patrons) => {
+      res.render('list_patron', {patrons});
+    });
 });
 
 module.exports = router;

@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg: 'Patron ID is required'
+        },
+        not: {
+          args: /[a-zA-Z!@#$%\^&*()_+=[\]{}:;'".,/\\?`~\-<>]/gim,
+          msg: 'Patron ID may only contain numbers'
         }
       }
     },
@@ -33,7 +37,9 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    returned_on: DataTypes.DATE
+    returned_on: {
+      type: DataTypes.DATE,
+    }
   });
 
   Loan.associate = function(models) {

@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg: 'Zip Code is required'
+        },
+        not: {
+          args: /[a-zA-Z!@#$%\^&*()_+=[\]{}:;'".,/\\?`~\-<>]/gim,
+          msg: 'Zip Code may only contain numbers'
         }
       }
     }

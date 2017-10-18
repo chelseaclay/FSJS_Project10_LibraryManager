@@ -2,6 +2,10 @@ extends layout
 
 block content
   h1 Patrons
+  form.search(method='get', action='/patrons?search=${search}')
+    p
+      input(type='text', name='search', placeholder='Search for Patrons')
+      input(type='submit', value='Search')
   p
     a.button(href='/patrons/new') Create New Patron
   table
