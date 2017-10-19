@@ -155,6 +155,7 @@ router.post('/new', function(req, res, next) {
 /* Get details of book */
 /////////////////////////////
 router.get('/:id', function(req, res, next) {
+  var errors = [req.query.errors];
   const foundBook = Book.findById(req.params.id);
 
   const foundLoan = Loan.findAll({
@@ -168,68 +169,25 @@ router.get('/:id', function(req, res, next) {
   });
 
   Promise.all([foundBook, foundLoan]).then(function(values) {
-    res.render('details_book', {book: values[0], loans: values[1]});
+    res.render('details_book', {book: values[0], loans: values[1], errors: errors});
   });
 });
 
 /////////////////////////////
 /* Update book */
 /////////////////////////////
-router.post('/:id', function(req, res, next) {
-  var errors = [];
-  var title = req.body.title;
-  var author = req.body.author;
-  var genre = req.body.genre;
-
-  if (!title) {
-    errors.push('Title is required')
-  } else if (!author) {
-    errors.push('Author is required');
-  } else if (!genre) {
-    errors.push('Genre is required');
-  } else if (SequelizeUniqueConstraintError) {
-    errors.push('Title already exists');
-  } else if (SequelizeValidationError) {
-    errors.push('First Published must be formatted YYYY');
-  }
-
-  if (errors.length > 0) {
-    const foundBook = Book.findById(req.params.id);
-    const foundLoan = Loan.findAll({
-      where: [{
-        book_id : req.params.id
-      }],
-      include: [
-        {model: Patron},
-        {model: Book}
-      ]
-    });
-
-    Promise.all([foundBook, foundLoan]).then(function(values) {
-      res.render('details_book', {book: values[0], loans: values[1], errors: errors});
-    });
-  } else {
-    const foundBook = Book.findById(req.params.id);
-    const foundLoan = Loan.findAll({
-      where: [{
-        book_id : req.params.id
-      }],
-      include: [
-        {model: Patron},
-        {model: Book}
-      ]
-    });
-
-    Promise.all([foundBook, foundLoan]).then(function(values) {
-      Book.update(req.body, {
-        where: [{
-          id : req.params.id
-        }]
-      }).then(function() {
-        res.redirect('/books');
-      });
-    });
-  }
+router.post("/:id", function(req, res, next) {
+    Book.update(req.body, {
+            where: [{ id: req.params.id }]
+        })
+        .then(function() {
+            return res.redirect("/books");
+        })
+        .catch(errors => {
+            const errMessages = errors.errors.map(err => err.message)
+                                      .reduce((curr, acc) => acc + "," + curr, "");
+            return res.redirect(`/books/${req.params.id}?errors=${errMessages}`);
+        });
 });
 
 /////////////////////////////
