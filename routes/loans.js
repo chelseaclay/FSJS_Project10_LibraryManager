@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-const moment = require('moment');
 var Loan = require('../models').Loan;
 var Book = require('../models').Book;
 var Patron = require('../models').Patron;
@@ -39,7 +38,6 @@ router.get('/', function(req, res, next) {
   var pagination = [];
 
   Loan.count({
-    distinct: true,
     col: 'book_id',
     include: [
       {model: Patron},
@@ -60,7 +58,7 @@ router.get('/', function(req, res, next) {
     limit: 5,
     offset: offset
   }).then(function(loans) {
-    res.render('list_loan', {loans, pages: pagination});
+    res.render('list_loan', {loans, pages: pagination, bookStatus: '/loans'});
   });
 });
 
@@ -102,14 +100,16 @@ router.get('/overdue_loans', function(req, res, next) {
     include: [
       {model: Book},
       {model: Patron}
-    ]
+    ],
+    limit: 5,
+    offset: offset
   }).then(function(loans) {
-    res.render('list_loan', {loans, pages: pagination});
+    res.render('list_loan', {loans, pages: pagination, bookStatus: '/loans/overdue_loans'});
   });
 });
 
 /////////////////////////////
-/* Get checked out Books */
+/* Get checked out Loans */
 /////////////////////////////
 router.get('/checked_loans', function(req, res, next) {
   var page = req.query.page || 1;
@@ -140,9 +140,11 @@ router.get('/checked_loans', function(req, res, next) {
     include: [
       {model: Book},
       {model: Patron}
-    ]
+    ],
+    limit: 5,
+    offset: offset
   }).then(function(loans) {
-    res.render('list_loan', {loans, pages: pagination});
+    res.render('list_loan', {loans, pages: pagination, bookStatus: '/loans/checked_loans'});
   });
 });
 
@@ -167,7 +169,7 @@ router.post('/new', function(req, res, next) {
     });
 
     Promise.all([allBooks, allPatrons]).then(function(values) {
-      res.render('new_loan', {books: values[0], patrons: values[1], todaysDateString, returnDateString, errors: error.errors});
+      res.render('new_loan', {books: values[0], patrons: values[1], todaysDateString, returnDateString, errors: error.errors, todaysDateString: req.body.loaned_on, returnDateString: req.body.return_by});
     });
   });
 });

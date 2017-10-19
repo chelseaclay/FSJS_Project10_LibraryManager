@@ -35,5 +35,5 @@ block content
                 a.button(href=`/books/${loan.Book.id}/return`) Return Book
   div.paginate
     each page in pages
-      a(href=`/loans?page=${page}`) #{page}
+      a(href=`${bookStatus}?page=${page}`) #{page}
       span &#124;

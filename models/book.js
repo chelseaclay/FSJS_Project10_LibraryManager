@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         not: {
           args: /[a-zA-Z!@#$%\^&*()_+=[\]{}:;'".,/\\?`~\-<>]/gim,
-          msg: 'First Published must be formatted YYYY-MM-DD'
+          msg: 'First Published must be formatted YYYY'
         }
       }
     }

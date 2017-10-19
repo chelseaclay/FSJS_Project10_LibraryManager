@@ -38,7 +38,7 @@ router.get('/', function(req, res, next) {
     limit: 5,
     offset: offset
   }).then(function(books) {
-    res.render('list_book', {books, pages: pagination});
+    res.render('list_book', {books, pages: pagination, bookStatus: '/books'});
   });
 });
 
@@ -89,7 +89,7 @@ router.get('/overdue_book', function(req, res, next) {
       }
     ]
   }).then(function(books) {
-    res.render('list_book', {books, pages: pagination});
+    res.render('list_book', {books, pages: pagination, bookStatus: '/books/overdue_loan'});
   });
 });
 
@@ -130,9 +130,11 @@ router.get('/checked_book', function(req, res, next) {
           returned_on: null,
         }
       }
-    ]
+    ],
+    limit: 5,
+    offset: offset
   }).then(function(books) {
-    res.render('list_book', {books, pages: pagination});
+    res.render('list_book', {books, pages: pagination, bookStatus: '/books/checked_'});
   });
 });
 
@@ -144,7 +146,7 @@ router.post('/new', function(req, res, next) {
     res.redirect('/books');
   }).catch(function(error) {
     if (error){
-      res.render("new_book",{errors: error.errors});
+      res.render("new_book",{errors: error.errors, title: req.body.title, genre: req.body.genre, author: req.body.author, first_published: req.body.first_published});
     }
   });
 });
@@ -252,7 +254,7 @@ router.post('/:id/return', (req, res, next) => {
 
   if (!returned_on) {
     errors.push('Return date is required')
-  } else if (returned_on > todaysDate) {
+  } else if (returned_on < todaysDateString) {
     errors.push('Please enter a valid return date');
   }
 

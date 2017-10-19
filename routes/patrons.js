@@ -57,13 +57,29 @@ router.get('/', function(req, res, next) {
     });
   }
 
+  var page = req.query.page || 1;
+  var offset = (page - 1) * 5;
+  var pagination = [];
+
+  Patron.count({
+    distinct: true,
+    col: 'id'
+  }).then(function(count) {
+    var pageNums = Math.ceil(count / 5);
+    for(var i = 0; i < pageNums; i++) {
+      pagination.push(i + 1);
+    }
+  });
+
   Patron.findAll({
     order: [
       ['first_name', 'ASC'],
       ['last_name', 'ASC']
-    ]
+    ],
+    limit: 5,
+    offset: offset
   }).then(function(patrons) {
-    res.render('list_patron', {patrons});
+    res.render('list_patron', {patrons, pages: pagination, bookStatus: '/patrons'});
   });
 });
 
@@ -75,7 +91,7 @@ router.post('/new', function(req, res, next) {
     res.redirect('/patrons');
   }).catch(function(error) {
     if (error){
-      res.render("new_patron",{errors: error.errors});
+      res.render("new_patron",{errors: error.errors, first_name: req.body.first_name, last_name: req.body.last_name, address: req.body.address, email: req.body.email, library_id: req.body.library_id, zip_code: req.body.zip_code});
     }
   });
 });
@@ -165,43 +181,6 @@ router.post('/:id', function(req, res, next) {
       });
     });
   }
-});
-
-/////////////////////////////
-/* Search patrons */
-/////////////////////////////
-router.get('/search', function (req, res) {
-  var searched = req.query.search;
-  console.log(searched);
-    Patron.findAll({
-      order: [
-        ['first_name', 'ASC'],
-        ['last_name', 'ASC']
-      ],
-      where: {
-        // first_name: {
-        //   $like: '%' + req.query.search + '%'
-        // },
-        last_name: {
-          $like: '%' + req.query.search + '%'
-        }
-        // ,
-        // address: {
-        //   $like: '%' + req.query.search + '%'
-        // },
-        // email: {
-        //   $like: '%' + req.query.search + '%'
-        // },
-        // library_id: {
-        //   $like: '%' + req.query.search + '%'
-        // },
-        // zip_code: {
-        //   $like: '%' + req.query.search + '%'
-        // }
-      }
-    }).then((patrons) => {
-      res.render('list_patron', {patrons});
-    });
 });
 
 module.exports = router;
