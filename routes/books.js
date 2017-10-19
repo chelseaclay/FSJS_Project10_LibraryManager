@@ -187,6 +187,10 @@ router.post('/:id', function(req, res, next) {
     errors.push('Author is required');
   } else if (!genre) {
     errors.push('Genre is required');
+  } else if (SequelizeUniqueConstraintError) {
+    errors.push('Title already exists');
+  } else if (SequelizeValidationError) {
+    errors.push('First Published must be formatted YYYY');
   }
 
   if (errors.length > 0) {
