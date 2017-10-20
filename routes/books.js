@@ -218,6 +218,8 @@ router.post('/:id/return', (req, res, next) => {
     errors.push('Return date is required')
   } else if (returned_on < todaysDateString) {
     errors.push('Please enter a valid return date');
+  } else if (returned_on.match(/[a-z]/i)) {
+    errors.push('Please enter a valid return date');
   }
 
   if (errors.length > 0) {
