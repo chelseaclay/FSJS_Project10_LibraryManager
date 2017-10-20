@@ -14,7 +14,10 @@ router.get('/new', function(req, res, next) {
   const allBooks = Book.findAll({
     order: [
       ['title', 'ASC']
-    ]
+    ],
+    include: [{
+      model: Loan
+    }]
   });
 
   const allPatrons = Patron.findAll({
@@ -25,6 +28,7 @@ router.get('/new', function(req, res, next) {
   });
 
   Promise.all([allBooks, allPatrons]).then(function(values) {
+    console.log(values[0][0]);
     res.render('new_loan', {books: values[0], patrons: values[1], todaysDateString, returnDateString});
   });
 });

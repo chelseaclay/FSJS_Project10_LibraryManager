@@ -2,6 +2,10 @@ extends layout
 
 block content
   h1 Books
+  form.search(method='get', action='/books?search=${search}')
+    p
+      input(type='text', name='search', placeholder='Search for Books')
+      input(type='submit', value='Search')
   p
     a.button(href='/books/new') Create New Book
   p
@@ -26,7 +30,8 @@ block content
               td #{book.author}
               td #{book.genre}
               td #{book.first_published}
-  div.paginate
-    each page in pages
-      a(href=`${bookStatus}?page=${page}`) #{page}
-      span &#124;
+  if !search
+    div.paginate
+      each page in pages
+        a(href=`${bookStatus}?page=${page}`) #{page}
+        span &#124;

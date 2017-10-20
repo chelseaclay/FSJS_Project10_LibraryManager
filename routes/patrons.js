@@ -53,7 +53,7 @@ router.get('/', function(req, res, next) {
         }]
       }
     }).then((patrons) => {
-      res.render('list_patron', {patrons});
+      res.render('list_patron', {patrons, search: true});
     });
   }
 
@@ -79,7 +79,7 @@ router.get('/', function(req, res, next) {
     limit: 5,
     offset: offset
   }).then(function(patrons) {
-    res.render('list_patron', {patrons, pages: pagination, bookStatus: '/patrons'});
+    res.render('list_patron', {patrons, pages: pagination, bookStatus: '/patrons', search: false});
   });
 });
 

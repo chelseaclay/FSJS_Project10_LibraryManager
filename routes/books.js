@@ -20,6 +20,36 @@ router.get('/', function(req, res, next) {
   var page = req.query.page || 1;
   var offset = (page - 1) * 5;
   var pagination = [];
+  var searched = req.query.search;
+
+  if(searched != undefined) {
+    Book.findAll({
+      order: [
+        ['title', 'ASC']
+      ],
+      where: {
+        $or: [{
+          title: {
+            $like: '%' + req.query.search + '%'
+          }
+        }, {
+          author: {
+            $like: '%' + req.query.search + '%'
+          }
+        }, {
+          genre: {
+            $like: '%' + req.query.search + '%'
+          }
+        }, {
+          first_published: {
+            $like: '%' + req.query.search + '%'
+          }
+        }]
+      }
+    }).then((books) => {
+      res.render('list_book', {books, search: true});
+    });
+  }
 
   Book.count({
     distinct: true,
@@ -38,7 +68,7 @@ router.get('/', function(req, res, next) {
     limit: 5,
     offset: offset
   }).then(function(books) {
-    res.render('list_book', {books, pages: pagination, bookStatus: '/books'});
+    res.render('list_book', {books, pages: pagination, bookStatus: '/books', search: false});
   });
 });
 
