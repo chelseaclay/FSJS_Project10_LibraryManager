@@ -63,7 +63,7 @@ router.get('/', function(req, res, next) {
 
   Patron.count({
     distinct: true,
-    col: 'patron_id'
+    col: 'id'
   }).then(function(count) {
     var pageNums = Math.ceil(count / 5);
     for(var i = 0; i < pageNums; i++) {
